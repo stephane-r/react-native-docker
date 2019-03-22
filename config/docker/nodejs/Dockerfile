@@ -33,7 +33,7 @@ RUN yes | $ANDROID_HOME/tools/bin/sdkmanager \
 RUN yes | $ANDROID_HOME/tools/bin/sdkmanager --update
 
 RUN npm install -g yarn
-RUN yarn global add react-native-cli
+RUN yarn global add react-native-cli flow-typed code-push-cli
 
 # GOSU
 WORKDIR $HOME
@@ -46,7 +46,7 @@ RUN arch="$(dpkg --print-architecture | awk -F- '{ print $NF }')" \
     && mv ./gosu /usr/local/bin/gosu \
     && chmod +x /usr/local/bin/gosu
 
-RUN git config --global user.name tonystark
+RUN git config --global user.name stephane
 
 COPY ./entrypoint.sh /usr/local/bin/entrypoint.sh
 RUN chmod a+x /usr/local/bin/entrypoint.sh
@@ -56,7 +56,7 @@ ENTRYPOINT ["/usr/local/bin/entrypoint.sh"]
 VOLUME ["/app"]
 
 # REAT APP PORT
-EXPOSE 8081 3000
+EXPOSE 8081 3000 5037
 
 # DEFAULT CORDOVA COMMAND
-CMD ["react-native", "yarn"]
+CMD ["react-native", "yarn", "flow-typed", "code-push"]

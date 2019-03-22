@@ -6,8 +6,10 @@ USER_ID=`id -u`
 export $(shell sed 's/=.*//' .env)
 
 DOCKERCOMPO = USER_ID=$(USER_ID) docker-compose -p $(COMPOSE_PROJECT_NAME)
-DOCKERCORRM = ${DOCKERCOMPO} run --rm --service-ports react-native
-DOCKERYARN = ${DOCKERCORRM} yarn
+DOCKERRM = ${DOCKERCOMPO} run --rm --service-ports
+DOCKERANDROID = $(DOCKERRM) android
+DOCKEREMULATOR = $(DOCKERRM) -d emulator
+DOCKERYARN = $(DOCKERANDROID) yarn
 
 # Help
 .SILENT:
@@ -20,15 +22,54 @@ help: ## Display this help
 ##########
 # Docker #
 ##########
-docker-build:
-	@echo "--> Building docker image"
-	$(DOCKERCOMPO) build
 docker-down:
 	@echo "--> Stopping docker services"
 	$(DOCKERCOMPO) down
-# docker-run-android:
-# 	@echo "--> Run Android app"
-# 	$(DOCKERYARN) mobile:android:run
 docker-run:
 	@echo "--> Run Docker container"
-	$(DOCKERCORRM) bash
+	$(DOCKERANDROID) bash
+
+
+########
+# Yarn #
+########
+yarn-install:
+	@echo "--> Install project dependencies"
+	$(DOCKERYARN)
+yarn-add:
+	@echo "--> Add dependency"
+	$(DOCKERYARN) add ${DEP}
+yarn-add-dev:
+	@echo "--> Add dev dependency"
+	$(DOCKERYARN) add -D ${DEP}
+yarn-remove:
+	@echo "--> Remove dependency"
+	$(DOCKERYARN) remove ${DEP}
+
+
+##############
+# FLOW TYPED #
+##############
+flow-install:
+	@echo "--> Add flow-typed libdefs"
+	# https://github.com/flow-typed/flow-typed
+	$(DOCKERFLOW) install ${DEP} # Example : make flow-install DEP="react-navigation"
+
+
+###########
+# Web App #
+###########
+web-start:
+	@echo "--> Run app on android devices"
+	$(DOCKERYARN) web:start
+
+
+##############
+# Native App #
+##############
+android-run:
+	@echo "--> Run app on Android devices"
+	$(DOCKERYARN) mobile:android:run
+android-run-emulator:
+	@echo "--> Run Docker container"
+	$(DOCKEREMULATOR)
