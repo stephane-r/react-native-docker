@@ -3,7 +3,6 @@ version: "3"
 services:
   android:
     image: react-native-android
-    container_name: youtube_audio_player
     environment:
       - LOCAL_USER_ID=$USER_ID
     ports:
@@ -11,7 +10,6 @@ services:
       - 3000:3000
     volumes:
       - /dev/bus/usb:/dev/bus/usb
-      - /app/.code-push.config:/home/stephane/.code-push.config
       - $PWD:/app
     privileged: true
   emulator:
